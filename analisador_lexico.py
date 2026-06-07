@@ -1,6 +1,5 @@
 import re
 
-# Palavras-chave da linguagem
 palavras_chave = ["if", "else", "while", "for", "print"]
 
 def analise_lexica(codigo):
@@ -25,7 +24,6 @@ print("=== ANALISADOR LÉXICO ===")
 codigo = input("Digite um código: ")
 
 analise_lexica(codigo)
-
 
 
 
