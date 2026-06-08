@@ -1,29 +1,64 @@
 import re
+import tkinter as tk
+from tkinter import scrolledtext
 
-palavras_chave = ["if", "else", "while", "for", "print"]
+palavras_chave = [
+    "if", "else", "while", "for", "print", "def", "return",
+    "class", "import", "try", "except", "public", "private",
+    "static", "void", "int", "float", "string", "function",
+    "let", "const", "var"
+]
 
-def analise_lexica(codigo):
+def identificar_linguagem(codigo):
+    if "System.out.println" in codigo or "public class" in codigo:
+        return "Java"
+    elif "def " in codigo or "import " in codigo:
+        return "Python"
+    elif "console.log" in codigo or "function " in codigo:
+        return "JavaScript"
+    elif "#include" in codigo or "printf(" in codigo:
+        return "C"
+    else:
+        return "Linguagem não identificada"
+
+def analisar():
+    codigo = entrada.get("1.0", tk.END)
+
     tokens = re.findall(r"[a-zA-Z_]\w*|\d+|[+\-*/=(){};,]", codigo)
 
-    print("\nTOKENS ENCONTRADOS:")
-    
+    resultado.delete("1.0", tk.END)
+
+    linguagem = identificar_linguagem(codigo)
+    resultado.insert(tk.END, f"Linguagem detectada: {linguagem}\n\n")
+
+    resultado.insert(tk.END, "TOKENS ENCONTRADOS:\n\n")
+
     for token in tokens:
         if token in palavras_chave:
-            print(f"{token} -> PALAVRA-CHAVE")
+            categoria = "PALAVRA-CHAVE"
         elif token.isdigit():
-            print(f"{token} -> NÚMERO")
+            categoria = "NÚMERO"
         elif token in "+-*/=":
-            print(f"{token} -> OPERADOR")
+            categoria = "OPERADOR"
         elif token in "(){};,":
-            print(f"{token} -> DELIMITADOR")
+            categoria = "DELIMITADOR"
         else:
-            print(f"{token} -> IDENTIFICADOR")
+            categoria = "IDENTIFICADOR"
 
-print("=== ANALISADOR LÉXICO ===")
+        resultado.insert(tk.END, f"{token} -> {categoria}\n")
 
-codigo = input("Digite um código: ")
+janela = tk.Tk()
+janela.title("Analisador Léxico")
+janela.geometry("700x500")
 
-analise_lexica(codigo)
+tk.Label(janela, text="Digite o código:").pack()
 
+entrada = scrolledtext.ScrolledText(janela, height=12)
+entrada.pack(fill="both", expand=True)
 
+tk.Button(janela, text="Analisar", command=analisar).pack(pady=5)
 
+resultado = scrolledtext.ScrolledText(janela, height=12)
+resultado.pack(fill="both", expand=True)
+
+janela.mainloop()
